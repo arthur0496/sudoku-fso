@@ -1,5 +1,5 @@
 #include <stdio.h>
-int sudoku[9][9];
+#include "verification.h"
 
 int main(){
   int line,column;
@@ -9,18 +9,22 @@ int main(){
   
   for(line = 0; line < 9; line++){
     for(column = 0; column <9; column++){
-      fscanf(sudoku_file,"%d",&sudoku[line][column]);
+      fscanf(sudoku_file, "%d", &sudoku[line][column]);
     }
   }
 
   fclose(sudoku_file);
+  
+  int a = 1;
+  pthread_t line_tid;
+  pthread_attr_t line_attr;
+  pthread_attr_init(&line_attr);
+  pthread_create(&line_tid, &line_attr, verify_lines, NULL);
 
-  for(line = 0; line < 9; line++){
-    for(column = 0; column <9; column++){
-      printf("%d ",sudoku[line][column]);
-    }
-    printf("\n");
-  }
+  pthread_join(line_tid,NULL);
+
+  printf("%d\n", errors);
+
 
   return 0;
 }
